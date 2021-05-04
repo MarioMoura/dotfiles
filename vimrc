@@ -51,15 +51,9 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'DrawIt'
-Plugin 'pangloss/vim-javascript'
-Plugin 'matchit.zip'
 Plugin 'mcchrish/nnn.vim'
-Plugin 'maxmellon/vim-jsx-pretty'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'valloric/youcompleteme'
-Plugin 'JavaScript-Indent'
-Plugin 'raimondi/delimitmate'
 Plugin 'alvan/vim-closetag'
 Plugin 'jeetsukumaran/vim-filesearch'
 Plugin 'airblade/vim-gitgutter'
@@ -70,6 +64,10 @@ Plugin 'mariomoura/nerdtree'
 Plugin 'lervag/vimtex'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
+Plugin 'ryanoasis/vim-devicons'
+Plugin 'sheerun/vim-polyglot'
+Plugin 'chemzqm/vim-jsx-improve'
+Plugin 'instant-markdown/vim-instant-markdown', {'rtp': 'after'}
 
 call vundle#end()
 
@@ -104,6 +102,7 @@ nnoremap <leader>ml :call Latex()<CR>
 nnoremap <leader>mk :call Make()<CR>
 nnoremap <leader>kk :call Togglekeys()<CR>
 nnoremap <leader>nn :NERDTreeToggle<CR>
+nnoremap <leader>t  :! st & disown<CR><CR>
 
 nnoremap <C-n> :NnnPicker %:p:h<CR>
 nnoremap <C-f>w :call FindWord()<CR>
@@ -134,7 +133,7 @@ nnoremap [c :GitGutterPrevHunk<CR>
 nnoremap ]c :GitGutterNextHunk<CR>
 
 " reeducation
-inoremap <esc> <nop>
+"inoremap <esc> <nop>
 "inoremap <Up> <Up>
 "inoremap <Down> <Down>
 "inoremap <Right> <Right>
@@ -153,11 +152,25 @@ iabbrev <@@> <mario@mariomoura.com>
 " Plugins Conf
 "=============================================================
 
+"================= Instant Markdown config ===================
+
+let g:instant_markdown_slow = 0
+let g:instant_markdown_browser = "firefox --new-window"
+
+"===================== Polyglot config =======================
+
+let g:polyglot_disabled = ['javascript', 'jsx', 'javascriptreact']
+
+"======================= CtrlP config ========================
+
+set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*
+let g:ctrlp_working_path_mode = 'c'
+let g:ctrlp_map = '<leader>p'
 "====================== UltiSnips conf =======================
 
-"let g:UltiSnipsExpandTrigger="<tab>"
-"let g:UltiSnipsJumpForwardTrigger="<c-h>"
-"let g:UltiSnipsJumpBackwardTrigger="<c-l>"
+let g:UltiSnipsExpandTrigger = '<tab>'
+let g:UltiSnipsJumpForwardTrigger = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
 let g:UltiSnipsEditSplit="vertical"
 let g:UltiSnipsListSnippets="<c-s>"
 
@@ -181,14 +194,15 @@ augroup NERDTree
 	autocmd VimEnter * call NERDTreeAddKeyMap({'key':'x','callback':'NERDTreeDeleteNode','quickhelpText':'delete node'})
 augroup END
 
-"======================= vimtex conf =========================
-let g:vimtex_enabled=0
+"======================= Vimtex conf =========================
 let g:tex_flavor='latex'
+let g:tex_conceal='abdmg'
+let g:vimtex_enabled=1
 let g:vimtex_view_method='zathura'
 let g:vimtex_quickfix_mode=0
-let g:tex_conceal='abdmg'
-"======================= NNN conf ============================
+let g:vimtex_fold_enabled=1
 
+"======================= NNN conf ============================
 let g:nnn#command = 'DISABLE_FILE_OPEN_ON_NAV=1 nnn -e'
 let g:nnn#layout = { 'left': '~20%' }
 
@@ -197,27 +211,22 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#hunks#enabled = 1
 let g:airline_theme='distinguished'
-"let g:airline_symbols_ascii = 1
 let g:airline_powerline_fonts = 1
-let g:airline_right_alt_sep = ''
-let g:airline_right_sep = ''
-let g:airline_left_alt_sep= ''
-let g:airline_left_sep = ''
-let g:airline#extensions#tabline#left_sep = ''
-let g:airline#extensions#tabline#left_alt_sep = ''
+"let g:airline_right_alt_sep = ''
+"let g:airline_right_sep = ''
+"let g:airline_left_alt_sep= ''
+"let g:airline_left_sep = ''
+"let g:airline#extensions#tabline#left_sep = ''
+"let g:airline#extensions#tabline#left_alt_sep = ''
 let g:airline_section_y='BN: %{bufnr("%")}'
 
 "==================== YouCompleteMe conf =====================
 let g:ycm_filter_diagnostics = { "c": { "level": "warning", }}
 let g:ycm_min_num_of_chars_for_completion = 1
-let g:ycm_filetype_blacklist = { 'tex' : 1 }
+"let g:ycm_filetype_blacklist = { 'tex' : 1 }
 let g:ycm_log_level = 'error'
 let g:ycm_auto_hover=""
-let g:ycm_key_list_select_completion = ['<Down>']
-
-"===================== DelimitMate conf ======================
-let g:delimitMate_matchpairs = "(:),[:],{:}"
-
+let g:ycm_key_list_select_completion = ['<C-space>', '<S-space>']
 
 "====================== Closetag conf ========================
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.js'
@@ -245,16 +254,21 @@ augroup END
 
 augroup tex
 	autocmd!
+	autocmd Filetype tex let g:vimtex_enabled=1
 	autocmd FileType tex nnoremap <buffer> <leader>we viw<esc>a <left>}<right><esc>xbbi\emph{<esc>
 	autocmd FileType tex nnoremap <buffer> <leader>wb viw<esc>a <left>}<right><esc>xbbi\textbf{<esc>
-	autocmd FileType tex nnoremap <buffer> <leader>lb :exe "!biber" expand('%:r')<CR>
-	autocmd FileType tex nnoremap <buffer> <leader>lc :exe "!pdflatex" expand('%')<CR>
-augroup END
-augroup sxhkd_file
-	autocmd!
-	autocmd BufWritePost sxhkdrc !restart_sxhkd.sh
+	autocmd FileType tex nnoremap <buffer> <leader>b :exe "!biber" expand('%:r')<CR>
+	autocmd FileType tex nnoremap <buffer> <leader>c :exe "!pdflatex" expand('%')<CR>
+	autocmd FileType tex nnoremap <buffer> <leader>v :VimtexView<CR>
+	autocmd FileType tex iabbrev nao não
 augroup END
 
+augroup misc
+	autocmd!
+	autocmd BufWritePost sxhkdrc !restart_sxhkd.sh
+	autocmd BufWritePost *.snippets :call UltiSnips#RefreshSnippets()
+    autocmd FileType javascript set filetype=javascriptreact
+augroup END
 
 "=============================================================
 " Tab Indent
@@ -400,8 +414,8 @@ function! Mykeysoff()
 	let b:mykeys=0
 	iunmap ~a
 	iunmap 'e
-	iunmap 'a
 	iunmap `a
+	iunmap 'a
 	iunmap ^a
 	iunmap ^e
 	iunmap ^i
