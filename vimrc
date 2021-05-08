@@ -36,6 +36,7 @@ set wildmenu								" menu autocomplete visualization
 set mouse=a									" allow multiple mouse usages
 set nocompatible							" do not provide backwards compatibility with vi
 set conceallevel=3							" set the conceal level to total
+set scrolloff=999							" cursor always in the middle of the screen
 let mapleader = " "
 filetype plugin indent on
 highlight Conceal ctermfg=6 ctermbg=16
@@ -267,7 +268,7 @@ augroup misc
 	autocmd!
 	autocmd BufWritePost sxhkdrc !restart_sxhkd.sh
 	autocmd BufWritePost *.snippets :call UltiSnips#RefreshSnippets()
-    autocmd FileType javascript set filetype=javascriptreact
+	autocmd FileType javascript set filetype=javascriptreact
 augroup END
 
 "=============================================================

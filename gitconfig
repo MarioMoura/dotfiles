@@ -1,0 +1,26 @@
+[user]
+	email = mario@mariomoura.com
+	name = MarioMoura
+	signingkey = mario (main) <mario@mariomoura.com>
+	
+[alias]
+	unstage = restore --staged
+	sdiff = diff --staged
+	rbc	= rebase --continue
+	pl	= pull
+	ps	= push
+	rmt = remote
+	aa 	= add --all
+	co 	= checkout
+	br 	= branch
+	cmt = commit -m
+	st 	= status
+	lg 	= log
+	gr 	= log --graph --decorate
+	gra = log --graph --decorate --all
+	h   = help
+	t   = tag -s
+[format]
+	pretty = format:%C(auto)%h %D%Creset %n  %s%n    %Cgreen%as%C(auto) %aN <%aE>%n    %Cblue  %G? %GS [%GT]%n
+[commit]
+	gpgsign = true
