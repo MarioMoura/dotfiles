@@ -27,7 +27,6 @@ setglobal fileencoding=utf-8
 set cmdheight=1								" vim cmd prompt height(redundant)
 set linebreak								" visually break lines
 set breakindent								" indent line breaks
-set shortmess=a								" avoids all 'hit-enter' effects
 set list lcs=tab:\ \ 						" intentional space after '\'; set tab appearance
 hi SpecialKey ctermfg=245
 set undodir=$HOME/.vim/undodir				" undo directory location
@@ -38,6 +37,8 @@ set nocompatible							" do not provide backwards compatibility with vi
 set conceallevel=3							" set the conceal level to total
 set scrolloff=999							" cursor always in the middle of the screen
 let mapleader = " "
+set shortmess=filnwxtToO
+
 filetype plugin indent on
 highlight Conceal ctermfg=6 ctermbg=16
 highlight Folded ctermfg=6 ctermbg=16
@@ -125,6 +126,8 @@ onoremap Q a"
 
 onoremap h ^
 onoremap l $
+
+nnoremap gqq gqgq
 
 nnoremap ghp :GitGutterPreviewHunk<CR>
 nnoremap ghs :GitGutterStageHunk<CR>
@@ -219,7 +222,8 @@ let g:airline_powerline_fonts = 1
 "let g:airline_left_sep = ''
 "let g:airline#extensions#tabline#left_sep = ''
 "let g:airline#extensions#tabline#left_alt_sep = ''
-let g:airline_section_y='BN: %{bufnr("%")}'
+let g:airline_skip_empty_sections = 1
+let g:airline#extensions#default#section_truncate_width = {}
 
 "==================== YouCompleteMe conf =====================
 let g:ycm_filter_diagnostics = { "c": { "level": "warning", }}
@@ -228,6 +232,9 @@ let g:ycm_min_num_of_chars_for_completion = 1
 let g:ycm_log_level = 'error'
 let g:ycm_auto_hover=""
 let g:ycm_key_list_select_completion = ['<C-space>', '<S-space>']
+let g:ycm_use_ultisnips_completer = 1
+let g:ycm_filetype_specific_completion_to_disable = { 'tex':1 }
+let g:ycm_autoclose_preview_window_after_completion = 1
 
 "====================== Closetag conf ========================
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*.js'
@@ -245,7 +252,7 @@ let g:gitgutter_async= 1
 "=============================================================
 augroup view
 	autocmd!
-	autocmd BufWinLeave *.* mkview
+	autocmd BufWritePost *.* mkview
 	autocmd BufWinEnter *.* silent loadview
 augroup END
 
@@ -259,9 +266,15 @@ augroup tex
 	autocmd FileType tex nnoremap <buffer> <leader>we viw<esc>a <left>}<right><esc>xbbi\emph{<esc>
 	autocmd FileType tex nnoremap <buffer> <leader>wb viw<esc>a <left>}<right><esc>xbbi\textbf{<esc>
 	autocmd FileType tex nnoremap <buffer> <leader>b :exe "!biber" expand('%:r')<CR>
-	autocmd FileType tex nnoremap <buffer> <leader>c :exe "!pdflatex" expand('%')<CR>
+	autocmd FileType tex nnoremap <buffer> <leader>C :exe "!pdflatex" expand('%')<CR>
 	autocmd FileType tex nnoremap <buffer> <leader>v :VimtexView<CR>
+	autocmd FileType tex set textwidth=65
+	autocmd FileType tex let ycm_min_num_identifier_candidate_chars = 99
+	" Portuguese
 	autocmd FileType tex iabbrev nao não
+	autocmd FileType tex iabbrev eh é
+	autocmd FileType tex iabbrev ah à
+	autocmd FileType tex iabbrev q que
 augroup END
 
 augroup misc
@@ -349,7 +362,6 @@ function! Latex()
 	endif
 endfunction
 
-
 "=============================================================
 " Auto Make
 "=============================================================
@@ -372,7 +384,6 @@ function! Make()
 		call MakeOn()
 	endif
 endfunction
-
 
 "=============================================================
 " Special keys
