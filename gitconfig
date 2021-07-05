@@ -7,7 +7,9 @@
 	unstage = restore --staged
 	sdiff = diff --staged
 	rbc	= rebase --continue
+	amd = commit --amend --no-edit
 	pl	= pull
+	psf	= push --force
 	ps	= push
 	rmt = remote
 	aa 	= add --all
@@ -20,6 +22,7 @@
 	gr 	= log --graph --decorate
 	gra = log --graph --decorate --all
 	h   = help
+	a   = add
 	t   = tag -s
 [format]
 	pretty = format:%C(auto)%h %D%Creset %n  %s%n    %Cgreen%as%C(auto) %aN <%aE>%n    %Cblue  %G? %GS [%GT]%n

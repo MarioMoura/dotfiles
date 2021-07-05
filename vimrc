@@ -103,7 +103,7 @@ nnoremap <leader>yw :call YcmWarnToogle()<CR>
 nnoremap <leader>ml :call Latex()<CR>
 nnoremap <leader>mk :call Make()<CR>
 nnoremap <leader>kk :call Togglekeys()<CR>
-nnoremap <leader>nn :NERDTreeToggle<CR>
+nnoremap <leader>nn :call NERDTreeToggleAndRefresh()<CR>
 nnoremap <leader>t  :! st & disown<CR><CR>
 
 nnoremap <C-n> :NnnPicker %:p:h<CR>
@@ -168,7 +168,8 @@ let g:polyglot_disabled = ['javascript', 'jsx', 'javascriptreact']
 "======================= CtrlP config ========================
 
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*
-let g:ctrlp_working_path_mode = 'c'
+let g:ctrlp_working_path_mode = 'a'
+let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
 let g:ctrlp_map = '<leader>p'
 "====================== UltiSnips conf =======================
 
@@ -183,7 +184,7 @@ let g:UltiSnipsListSnippets="<c-s>"
 let NERDTreeMapActivateNode='l'
 let NERDTreeMapCloseDir='h'
 let NERDTreeMapUpdir='H'
-let NERDTreeMapChangeRoot='r'
+"let NERDTreeMapChangeRoot='r'
 let g:NERDTreeDisableDefaultMenu = 1
 let NERDTreeMenuQuit = 'q'
 augroup NERDTree
@@ -197,6 +198,12 @@ augroup NERDTree
 
 	autocmd VimEnter * call NERDTreeAddKeyMap({'key':'x','callback':'NERDTreeDeleteNode','quickhelpText':'delete node'})
 augroup END
+function NERDTreeToggleAndRefresh()
+  :NERDTreeToggle
+  if g:NERDTree.IsOpen()
+    :NERDTreeRefreshRoot
+  endif
+endfunction
 
 "======================= Vimtex conf =========================
 let g:tex_flavor='latex'
@@ -208,7 +215,7 @@ let g:vimtex_fold_enabled=1
 
 "======================= NNN conf ============================
 let g:nnn#command = 'DISABLE_FILE_OPEN_ON_NAV=1 nnn -e'
-let g:nnn#layout = { 'left': '~20%' }
+let g:nnn#layout = { 'left': '~15%' }
 
 "===================== Airline conf ==========================
 let g:airline#extensions#tabline#enabled = 1
@@ -228,7 +235,7 @@ let g:airline#extensions#default#section_truncate_width = {}
 "==================== YouCompleteMe conf =====================
 let g:ycm_filter_diagnostics = { "c": { "level": "warning", }}
 let g:ycm_min_num_of_chars_for_completion = 1
-"let g:ycm_filetype_blacklist = { 'tex' : 1 }
+let g:ycm_filetype_blacklist = { 'tex' : 1 }
 let g:ycm_log_level = 'error'
 let g:ycm_auto_hover=""
 let g:ycm_key_list_select_completion = ['<C-space>', '<S-space>']
