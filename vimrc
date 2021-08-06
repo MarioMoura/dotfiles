@@ -38,11 +38,15 @@ set conceallevel=3							" set the conceal level to total
 set scrolloff=999							" cursor always in the middle of the screen
 let mapleader = " "
 set shortmess=filnwxtToO
+set cursorline
 
 filetype plugin indent on
-highlight Conceal ctermfg=6 ctermbg=16
-highlight Folded ctermfg=6 ctermbg=16
-
+highlight Conceal ctermfg            = 6 ctermbg   = 16
+highlight Folded ctermfg             = 7 ctermbg   = 16
+highlight Pmenu ctermbg              = 234 ctermfg = 255
+highlight jsObjectKey ctermfg        = 60
+highlight jsObjectValue ctermfg      = 144
+highlight jsxExpressionBlock ctermfg = 144
 
 "=============================================================
 " Vundle
@@ -53,9 +57,13 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'ap/vim-buftabline'
 Plugin 'mcchrish/nnn.vim'
 Plugin 'scrooloose/nerdcommenter'
-Plugin 'valloric/youcompleteme'
+
+"Plugin 'valloric/youcompleteme'
+Plugin 'neoclide/coc.nvim'
+
 Plugin 'alvan/vim-closetag'
 Plugin 'jeetsukumaran/vim-filesearch'
 Plugin 'airblade/vim-gitgutter'
@@ -67,9 +75,17 @@ Plugin 'lervag/vimtex'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'ryanoasis/vim-devicons'
-Plugin 'sheerun/vim-polyglot'
-Plugin 'chemzqm/vim-jsx-improve'
 Plugin 'instant-markdown/vim-instant-markdown', {'rtp': 'after'}
+
+Plugin 'pangloss/vim-javascript'
+Plugin 'MaxMEllon/vim-jsx-pretty'
+Plugin 'godlygeek/tabular'
+
+Plugin 'Galooshi/vim-import-js'
+
+
+"Plugin 'sheerun/vim-polyglot'
+"Plugin 'chemzqm/vim-jsx-improve'
 
 call vundle#end()
 
@@ -77,7 +93,6 @@ call vundle#end()
 " Mappings
 "=============================================================
 nnoremap <C-q> :bdelete<CR>
-nnoremap <C-x> :bdelete<CR>
 nnoremap <C-s> :w<CR>
 nnoremap <C-l> :bn<CR>
 nnoremap <C-h> :bp<CR>
@@ -99,18 +114,47 @@ nnoremap <leader>' viw<esc>a"<esc>hbi"<esc>lel
 nnoremap <leader>ee :vsplit $MYVIMRC<CR>
 nnoremap <leader>es :so $MYVIMRC<CR>
 nnoremap <leader>tt :call TabIndentToogle()<CR>
-nnoremap <leader>yw :call YcmWarnToogle()<CR>
-nnoremap <leader>ml :call Latex()<CR>
 nnoremap <leader>mk :call Make()<CR>
-nnoremap <leader>kk :call Togglekeys()<CR>
+nnoremap <leader>tk :call Togglekeys()<CR>
 nnoremap <leader>nn :call NERDTreeToggleAndRefresh()<CR>
-nnoremap <leader>t  :! st & disown<CR><CR>
+nnoremap <leader>tt :! st & disown<CR><CR>
 
-nnoremap <C-n> :NnnPicker %:p:h<CR>
+nnoremap <leader>pp  :CtrlP<CR>
+nnoremap <leader>pb  :CtrlPBuffer<CR>
+
 nnoremap <C-f>w :call FindWord()<CR>
 nnoremap <C-f>f :call FindFile()<CR>
 
 inoremap jk <esc>
+inoremap . .<c-g>u
+inoremap , ,<c-g>u
+inoremap ! !<c-g>u
+inoremap ? ?<c-g>u
+inoremap { {<c-g>u
+inoremap } }<c-g>u
+inoremap [ [<c-g>u
+inoremap ] ]<c-g>u
+
+" line moving
+nnoremap <leader>j :m .+1<CR>==
+nnoremap <leader>k :m .-2<CR>==
+inoremap <C-j> <Esc>:m .+1<CR>==gi
+inoremap <C-k> <Esc>:m .-2<CR>==gi
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
+
+" st is configured to return Ω and α on <S-space> and <C-space>
+inoremap <expr> Ω pumvisible() ? "\<C-n>" : coc#refresh()
+inoremap <expr> α pumvisible() ? "\<C-p>" : coc#refresh()
+nnoremap Ω :CocAction<cr>
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<CR>"
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+nmap <leader>r <Plug>(coc-rename)
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
 
 "===================== Objects ===============================
 onoremap p i(
@@ -156,6 +200,11 @@ iabbrev <@@> <mario@mariomoura.com>
 " Plugins Conf
 "=============================================================
 
+"========================== CoC ==============================
+let g:coc_global_extensions = ['coc-tsserver']
+let g:coc_global_extensions += ['coc-eslint']
+"======================= BufTabLine ==========================
+let g:buftabline_show=1
 "================= Instant Markdown config ===================
 
 let g:instant_markdown_slow = 0
@@ -168,9 +217,11 @@ let g:polyglot_disabled = ['javascript', 'jsx', 'javascriptreact']
 "======================= CtrlP config ========================
 
 set wildignore+=*/.git/*,*/.hg/*,*/.svn/*,*/node_modules/*
+let g:ctrlp_max_files = 5000
 let g:ctrlp_working_path_mode = 'a'
+let g:ctrlp_use_caching = 0
 let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|git'
-let g:ctrlp_map = '<leader>p'
+let g:ctrlp_map = ''
 "====================== UltiSnips conf =======================
 
 let g:UltiSnipsExpandTrigger = '<tab>'
@@ -218,7 +269,7 @@ let g:nnn#command = 'DISABLE_FILE_OPEN_ON_NAV=1 nnn -e'
 let g:nnn#layout = { 'left': '~15%' }
 
 "===================== Airline conf ==========================
-let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#bufferline#enabled = 1
 let g:airline#extensions#branch#enabled = 1
 let g:airline#extensions#hunks#enabled = 1
 let g:airline_theme='distinguished'
@@ -260,6 +311,7 @@ let g:gitgutter_async= 1
 augroup view
 	autocmd!
 	autocmd BufWritePost *.* mkview
+	autocmd BufLeave *.* mkview
 	autocmd BufWinEnter *.* silent loadview
 augroup END
 
@@ -284,11 +336,18 @@ augroup tex
 	autocmd FileType tex iabbrev q que
 augroup END
 
+augroup js
+	autocmd!
+	autocmd FileType javascript set filetype=javascriptreact
+	"autocmd BufWritePre *.js ImportJSFix 
+	autocmd FileType javascriptreact set foldmethod=syntax "syntax highlighting items specify folds  
+	autocmd FileType javascriptreact set foldlevelstart=99 "start file with all folds opened
+augroup END
+
 augroup misc
 	autocmd!
 	autocmd BufWritePost sxhkdrc !restart_sxhkd.sh
 	autocmd BufWritePost *.snippets :call UltiSnips#RefreshSnippets()
-	autocmd FileType javascript set filetype=javascriptreact
 augroup END
 
 "=============================================================
